@@ -75,7 +75,9 @@ cd grandhr
 
 ```bash
 # Frontend
+cd frontend
 npm install
+cd ..
 
 # Backend
 cd backend
@@ -97,14 +99,14 @@ cd ..
 
 ### 4. Configure Environment Variables
 
-**Frontend `.env` (root directory):**
+**Frontend `.env` (in `frontend/` directory):**
 ```env
 VITE_SUPABASE_URL=https://xxxxx.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 VITE_API_URL=http://localhost:5000/api
 ```
 
-**Backend `.env` (backend directory):**
+**Backend `.env` (in `backend/` directory):**
 ```env
 DATABASE_URL="postgresql://postgres.xxxxx:PASSWORD@aws-0-xx.pooler.supabase.com:6543/postgres?pgbouncer=true"
 DIRECT_URL="postgresql://postgres.xxxxx:PASSWORD@aws-0-xx.pooler.supabase.com:5432/postgres"
@@ -128,6 +130,7 @@ npm run dev
 
 ```bash
 # From project root
+cd frontend
 npm run dev
 ```
 
@@ -137,6 +140,8 @@ Visit `http://localhost:3000`
 
 - **[Complete Setup Guide](COMPLETE_SETUP_GUIDE.md)** - Detailed setup instructions
 - **[Quick Start Guide](QUICK_START.md)** - 5-minute setup
+- **[Vercel Deployment](VERCEL_DEPLOYMENT.md)** - Production deployment guide
+- **[Quick Deploy](QUICK_DEPLOY.md)** - 10-minute deployment
 - **[Backend Setup](backend/SUPABASE_SETUP.md)** - Backend configuration
 - **[Integration Summary](INTEGRATION_SUMMARY.md)** - Feature overview
 
@@ -144,26 +149,37 @@ Visit `http://localhost:3000`
 
 ```
 grandhr/
-├── src/
-│   ├── components/          # React components
-│   │   ├── Hierarchy.jsx    # Org hierarchy manager
-│   │   ├── HRDashboard.jsx  # HR dashboard
-│   │   ├── Employees.jsx    # Employee management
-│   │   ├── Leaves.jsx       # Leave management
-│   │   ├── Attendance.jsx  # Attendance tracking
-│   │   ├── Payroll.jsx      # Payroll management
-│   │   └── ...              # Document generators
-│   ├── contexts/            # React contexts
-│   ├── services/            # API services
-│   ├── utils/               # Utilities
-│   └── lib/                 # Libraries
-├── backend/                 # Node.js/Express backend
+├── frontend/                # Frontend React app
+│   ├── src/
+│   │   ├── components/      # React components
+│   │   │   ├── Hierarchy.jsx    # Org hierarchy manager
+│   │   │   ├── HRDashboard.jsx  # HR dashboard
+│   │   │   ├── Employees.jsx    # Employee management
+│   │   │   ├── Leaves.jsx       # Leave management
+│   │   │   ├── Attendance.jsx   # Attendance tracking
+│   │   │   ├── Payroll.jsx      # Payroll management
+│   │   │   ├── Navbar.jsx       # Navigation
+│   │   │   └── ...              # Document generators
+│   │   ├── contexts/        # React contexts
+│   │   ├── services/        # API services
+│   │   ├── lib/             # Libraries
+│   │   ├── utils/            # Utilities
+│   │   └── main.jsx          # React entry point
+│   ├── package.json         # Frontend dependencies
+│   ├── vite.config.js       # Vite configuration
+│   └── vercel.json          # Frontend Vercel config
+│
+├── backend/                 # Backend API
 │   ├── src/
 │   │   ├── controllers/     # API controllers
 │   │   ├── routes/          # API routes
 │   │   ├── middleware/      # Auth middleware
 │   │   └── utils/           # Utilities
-│   └── prisma/              # Database schema
+│   ├── api/                 # Vercel serverless entry
+│   ├── prisma/              # Database schema
+│   ├── package.json         # Backend dependencies
+│   └── vercel.json          # Backend Vercel config
+│
 ├── supabase-complete-schema.sql  # Database schema
 └── README.md                # This file
 ```
@@ -234,31 +250,35 @@ GrandHR uses two authentication systems:
 
 ## 🚢 Production Deployment
 
+### Vercel Deployment (Recommended)
+
+**Deploy as Two Separate Projects:**
+
+1. **Frontend Project:**
+   - Root Directory: `frontend`
+   - Framework: Vite
+   - Build: `npm run build`
+   - Output: `dist`
+
+2. **Backend Project:**
+   - Root Directory: `backend`
+   - Framework: Other
+   - Build: `npm run vercel-build`
+   - Output: (empty)
+
+See **[VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md)** for detailed instructions.
+
 ### Build for Production
 
 ```bash
 # Frontend
+cd frontend
 npm run build
 
 # Backend
 cd backend
 npm run build
 ```
-
-### Deploy Options
-
-- **Frontend**: Vercel, Netlify, GitHub Pages
-- **Backend**: Vercel, Railway, Render, AWS
-- **Database**: Supabase (already hosted)
-
-### Environment Variables
-
-Set these in your deployment platform:
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_ANON_KEY`
-- `VITE_API_URL` (backend URL)
-- `DATABASE_URL` (backend)
-- `JWT_SECRET` (backend)
 
 ## 🤝 Contributing
 
