@@ -1,0 +1,181 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  HR
+  MANAGER
+  EMPLOYEE
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum LeaveType {
+  SICK_LEAVE
+  CASUAL_LEAVE
+  EARNED_LEAVE
+  MATERNITY_LEAVE
+  PATERNITY_LEAVE
+  COMP_OFF
+  LOP
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  HALF_DAY
+  HOLIDAY
+  WEEKEND
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  role      UserRole @default(EMPLOYEE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  employee  Employee?
+}
+
+model Employee {
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId    String   @unique
+  firstName     String
+  lastName      String
+  phone         String?
+  dateOfBirth   DateTime?
+  address       String?
+  city          String?
+  state         String?
+  zipCode       String?
+  country       String?
+  department    String?
+  designation   String?
+  joiningDate   DateTime @default(now())
+  salary        Float?
+  managerId     String?
+  manager       Employee? @relation("ManagerEmployee", fields: [managerId], references: [id])
+  subordinates  Employee[] @relation("ManagerEmployee")
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  leaves        Leave[]
+  attendances   Attendance[]
+  payrolls      Payroll[]
+  documents     Document[]
+  reviews       PerformanceReview[] @relation("Reviewee")
+  reviewsGiven  PerformanceReview[] @relation("Reviewer")
+}
+
+model Leave {
+  id          String      @id @default(uuid())
+  employeeId  String
+  employee    Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  type        LeaveType
+  startDate   DateTime
+  endDate     DateTime
+  days        Int
+  reason      String?
+  status      LeaveStatus @default(PENDING)
+  approvedBy  String?
+  approvedAt  DateTime?
+  rejectedReason String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Attendance {
+  id          String           @id @default(uuid())
+  employeeId  String
+  employee    Employee         @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  date        DateTime         @db.Date
+  clockIn     DateTime?
+  clockOut    DateTime?
+  breakDuration Int?           @default(0) // in minutes
+  totalHours  Float?
+  status      AttendanceStatus @default(PRESENT)
+  notes       String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@unique([employeeId, date])
+  @@index([employeeId, date])
+}
+
+model Payroll {
+  id            String   @id @default(uuid())
+  employeeId    String
+  employee      Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  month         Int      // 1-12
+  year          Int
+  baseSalary    Float
+  allowances    Float    @default(0)
+  deductions    Float    @default(0)
+  tax           Float    @default(0)
+  netSalary     Float
+  paidDate      DateTime?
+  status        String   @default("PENDING") // PENDING, PAID, CANCELLED
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([employeeId, month, year])
+  @@index([employeeId, year, month])
+}
+
+model Document {
+  id          String   @id @default(uuid())
+  employeeId  String
+  employee    Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  name        String
+  type        String   // RESUME, CONTRACT, CERTIFICATE, ID_PROOF, etc.
+  fileUrl     String
+  uploadedBy  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PerformanceReview {
+  id          String   @id @default(uuid())
+  employeeId  String
+  employee    Employee @relation("Reviewee", fields: [employeeId], references: [id], onDelete: Cascade)
+  reviewerId  String
+  reviewer    Employee @relation("Reviewer", fields: [reviewerId], references: [id])
+  period      String   // e.g., "Q1 2024", "2024 Annual"
+  rating      Int?     // 1-5
+  feedback    String?
+  goals       String?
+  achievements String?
+  status      String   @default("DRAFT") // DRAFT, SUBMITTED, APPROVED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  type      String   // INFO, SUCCESS, WARNING, ERROR
+  isRead    Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+}
+

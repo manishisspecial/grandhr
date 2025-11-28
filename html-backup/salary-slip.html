@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Slip Generator - Multi Company</title>
+    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/salary-slip.js"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700">
+    <div class="container mx-auto px-4 py-6 max-w-7xl">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <a href="/" class="inline-block mb-4 text-white hover:text-primary-100 transition-colors">
+                ← Back to Home
+            </a>
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">💰 Salary Slip Generator</h1>
+            <p class="text-xl text-white/90">Generate professional salary slips for multiple companies</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Form Section -->
+            <div class="space-y-6">
+                <!-- Company Selection -->
+                <div class="card shadow-xl">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-2xl">🏢</span>
+                        <h2 class="section-title mb-0 flex-1">Company & Template Selection</h2>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="companySelect" class="form-label">Select Company:</label>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <select id="companySelect" onchange="loadCompanyTemplate()" class="form-input flex-1">
+                                    <option value="">-- Select Company --</option>
+                                    <option value="new">+ Add New Company</option>
+                                </select>
+                                <button type="button" class="btn-secondary whitespace-nowrap" onclick="showCompanyManager()">Manage Companies</button>
+                            </div>
+                        </div>
+
+                        <div id="companyForm" class="hidden space-y-4 p-4 bg-gray-50 rounded-lg border-2 border-primary-200">
+                            <h3 class="text-lg font-bold text-primary-600">Add/Edit Company Details</h3>
+                            <div>
+                                <label for="companyName" class="form-label">Company Name:</label>
+                                <input type="text" id="companyName" class="form-input" placeholder="e.g., ANGINATAPP INNOVATIONS PRIVATE LIMITED">
+                            </div>
+                            <div>
+                                <label for="companyAddress" class="form-label">Company Address:</label>
+                                <textarea id="companyAddress" rows="3" class="form-input" placeholder="Full company address"></textarea>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="companyEmail" class="form-label">Company Email:</label>
+                                    <input type="email" id="companyEmail" class="form-input" placeholder="hr@company.com">
+                                </div>
+                                <div>
+                                    <label for="companyPhone" class="form-label">Company Phone:</label>
+                                    <input type="text" id="companyPhone" class="form-input" placeholder="+91-XXXXXXXXXX">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="companyLogoUpload" class="form-label">Company Logo (Optional):</label>
+                                <input type="file" id="companyLogoUpload" accept="image/*" class="form-input" onchange="handleLogoUpload(event)">
+                                <p class="text-xs text-gray-500 mt-1">Supported formats: JPG, PNG, GIF (Max 2MB)</p>
+                                <div id="logoPreview" class="mt-3 hidden">
+                                    <div class="p-3 bg-white border-2 border-gray-300 rounded-lg">
+                                        <p class="text-xs font-semibold text-gray-600 mb-2">Logo Preview:</p>
+                                        <img id="logoPreviewImg" src="" alt="Logo Preview" class="max-h-20 border-2 border-gray-300 rounded p-2 bg-white object-contain">
+                                        <button type="button" onclick="removeLogo()" class="mt-2 text-sm text-red-600 hover:text-red-800 font-semibold">Remove Logo</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button type="button" class="btn-primary flex-1" onclick="saveCompany()">Save Company</button>
+                                <button type="button" class="btn-secondary flex-1" onclick="cancelCompanyForm()">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Employee Information -->
+                <div class="card shadow-xl">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-2xl">👤</span>
+                        <h2 class="section-title mb-0 flex-1">Employee Information</h2>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="employeeName" class="form-label">
+                                Employee Name: <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="employeeName" class="form-input" placeholder="Enter full name" required>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="employeeId" class="form-label">Employee ID:</label>
+                                <input type="text" id="employeeId" class="form-input" placeholder="e.g., ANG/EMP/026">
+                            </div>
+                            <div>
+                                <label for="designation" class="form-label">
+                                    Designation: <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="designation" class="form-input" placeholder="e.g., Full Stack Developer" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="dateOfJoining" class="form-label">Date of Joining:</label>
+                            <input type="date" id="dateOfJoining" class="form-input">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="pan" class="form-label">PAN Number:</label>
+                                <input type="text" id="pan" class="form-input" placeholder="e.g., CHSPT3151Q" maxlength="10">
+                            </div>
+                            <div>
+                                <label for="uan" class="form-label">UAN Number:</label>
+                                <input type="text" id="uan" class="form-input" placeholder="e.g., 123456789012" maxlength="12">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="bankName" class="form-label">Bank Name:</label>
+                                <input type="text" id="bankName" class="form-input" placeholder="e.g., UCO Bank">
+                            </div>
+                            <div>
+                                <label for="accountNumber" class="form-label">Account Number:</label>
+                                <input type="text" id="accountNumber" class="form-input" placeholder="e.g., 1530110045114">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="ifscCode" class="form-label">IFSC Code:</label>
+                            <input type="text" id="ifscCode" class="form-input" placeholder="e.g., UCBA0000153">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Salary Period -->
+                <div class="card shadow-xl">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-2xl">📅</span>
+                        <h2 class="section-title mb-0 flex-1">Salary Period</h2>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="payMonth" class="form-label">Pay Month:</label>
+                            <select id="payMonth" class="form-input">
+                                <option value="January">January</option>
+                                <option value="February">February</option>
+                                <option value="March">March</option>
+                                <option value="April">April</option>
+                                <option value="May">May</option>
+                                <option value="June">June</option>
+                                <option value="July">July</option>
+                                <option value="August">August</option>
+                                <option value="September">September</option>
+                                <option value="October">October</option>
+                                <option value="November">November</option>
+                                <option value="December">December</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="payYear" class="form-label">Pay Year:</label>
+                            <select id="payYear" class="form-input"></select>
+                        </div>
+                        <div>
+                            <label for="payDate" class="form-label">Pay Date:</label>
+                            <input type="date" id="payDate" class="form-input">
+                        </div>
+                        <div>
+                            <label for="paidDays" class="form-label">Paid Days:</label>
+                            <input type="number" id="paidDays" min="0" max="31" value="31" class="form-input" onchange="calculateTotals()">
+                        </div>
+                        <div>
+                            <label for="lopDays" class="form-label">LOP Days (Loss of Pay):</label>
+                            <input type="number" id="lopDays" min="0" max="31" value="0" class="form-input" onchange="calculateTotals()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Earnings -->
+                <div class="card shadow-xl bg-gradient-to-br from-green-50 to-white">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-2xl">💰</span>
+                        <h2 class="section-title mb-0 flex-1 text-green-600">Earnings</h2>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="basicSalary" class="form-label flex items-center gap-2">
+                                <span>Basic (₹):</span>
+                                <span class="text-xs text-gray-500 font-normal">(Enter amount)</span>
+                            </label>
+                            <input type="number" id="basicSalary" class="form-input text-lg font-semibold" placeholder="e.g., 20000" step="0.01" oninput="calculateHRA()" onchange="calculateHRA()">
+                            <p class="text-xs text-gray-500 mt-1">💡 This is the base salary amount</p>
+                        </div>
+                        <div>
+                            <label for="hra" class="form-label flex items-center gap-2">
+                                <span>House Rent Allowance (₹):</span>
+                                <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-normal">Auto: 50% of Basic</span>
+                            </label>
+                            <input type="number" id="hra" class="form-input bg-blue-50 border-blue-200" placeholder="Auto-calculated" step="0.01" readonly>
+                        </div>
+                        <div>
+                            <label for="otherAllowance" class="form-label flex items-center gap-2">
+                                <span>Other Allowance (₹):</span>
+                                <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-normal">Auto: HRA - 2000</span>
+                            </label>
+                            <input type="number" id="otherAllowance" class="form-input bg-blue-50 border-blue-200" placeholder="Auto-calculated" step="0.01" readonly>
+                        </div>
+                        <div>
+                            <label for="specialAllowance" class="form-label flex items-center gap-2">
+                                <span>Special Allowance (₹):</span>
+                                <span class="text-xs text-gray-500 font-normal">(Enter amount)</span>
+                            </label>
+                            <input type="number" id="specialAllowance" class="form-input" placeholder="e.g., 2000" step="0.01" oninput="calculateTotals()" onchange="calculateTotals()">
+                        </div>
+                        <div class="pt-2 border-t-2 border-green-300">
+                            <label for="grossEarnings" class="form-label flex items-center gap-2">
+                                <span class="text-green-700 font-bold">Gross Earnings (₹):</span>
+                            </label>
+                            <input type="number" id="grossEarnings" readonly class="form-input bg-green-100 border-green-300 text-green-700 font-bold text-lg">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deductions -->
+                <div class="card shadow-xl bg-gradient-to-br from-red-50 to-white">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-2xl">📉</span>
+                        <h2 class="section-title mb-0 flex-1 text-red-600">Deductions</h2>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="providentFund" class="form-label flex items-center gap-2">
+                                <span>Provident Fund (₹):</span>
+                                <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-normal">Auto: 12% of Basic</span>
+                            </label>
+                            <input type="number" id="providentFund" class="form-input bg-blue-50 border-blue-200" placeholder="Auto-calculated" step="0.01" readonly>
+                        </div>
+                        <div>
+                            <label for="pfEmployerShare" class="form-label flex items-center gap-2">
+                                <span>PF Employer Share (₹):</span>
+                                <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-normal">Auto: 13% of Basic</span>
+                            </label>
+                            <input type="number" id="pfEmployerShare" class="form-input bg-blue-50 border-blue-200" placeholder="Auto-calculated" step="0.01" readonly>
+                        </div>
+                        <div class="pt-2 border-t-2 border-red-300">
+                            <label for="totalDeductions" class="form-label flex items-center gap-2">
+                                <span class="text-red-700 font-bold">Total Deductions (₹):</span>
+                            </label>
+                            <input type="number" id="totalDeductions" readonly class="form-input bg-red-100 border-red-300 text-red-700 font-bold text-lg">
+                        </div>
+                        <div class="pt-2 border-t-2 border-green-400 bg-green-50 p-4 rounded-lg">
+                            <label for="netPayable" class="form-label flex items-center gap-2">
+                                <span class="text-green-700 font-bold text-lg">Total Net Payable (₹):</span>
+                            </label>
+                            <input type="number" id="netPayable" readonly class="form-input bg-white border-green-400 text-green-700 font-bold text-2xl">
+                        </div>
+                        <div>
+                            <label class="form-label">Amount in Words:</label>
+                            <div id="amountInWords" class="p-3 bg-blue-50 border-2 border-blue-200 rounded-lg text-blue-800 font-semibold italic min-h-[3rem]">
+                                <span class="text-sm">Enter salary details to see amount in words</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                    <button type="button" class="btn-primary flex-1 text-lg py-4 flex items-center justify-center gap-2" onclick="generateSalarySlip()">
+                        <span>📄</span>
+                        <span>Generate Salary Slip</span>
+                    </button>
+                    <button type="button" class="btn-secondary flex-1 py-4 flex items-center justify-center gap-2" onclick="previewSalarySlip()">
+                        <span>👁️</span>
+                        <span>Preview</span>
+                    </button>
+                    <button type="button" class="btn-secondary flex-1 py-4 flex items-center justify-center gap-2" onclick="clearForm()">
+                        <span>🗑️</span>
+                        <span>Clear Form</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="lg:sticky lg:top-6 h-fit">
+                <div id="previewSection" class="hidden card shadow-2xl border-2 border-primary-300">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-2xl">👁️</span>
+                        <h2 class="section-title mb-0 flex-1">Live Preview</h2>
+                    </div>
+                    <div id="previewContent" class="preview-content bg-white p-6 rounded-lg border-2 border-gray-200 max-h-[calc(100vh-200px)] overflow-y-auto shadow-inner"></div>
+                    <div class="flex flex-col sm:flex-row gap-3 mt-4">
+                        <button type="button" class="btn-primary flex-1 py-4 flex items-center justify-center gap-2 text-lg" onclick="downloadPDF()">
+                            <span>📥</span>
+                            <span>Download PDF</span>
+                        </button>
+                        <button type="button" class="btn-secondary flex-1 py-4 flex items-center justify-center gap-2" onclick="closePreview()">
+                            <span>✕</span>
+                            <span>Close Preview</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="emptyPreview" class="card shadow-xl bg-white/80 backdrop-blur-sm border-2 border-dashed border-gray-300 text-center py-12">
+                    <div class="text-6xl mb-4">📋</div>
+                    <h3 class="text-xl font-bold text-gray-600 mb-2">Preview Will Appear Here</h3>
+                    <p class="text-gray-500">Fill in the form and click "Preview" to see your salary slip</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Company Manager Modal -->
+    <div id="companyManagerModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-gray-800">Manage Companies</h2>
+                <button onclick="closeCompanyManager()" class="text-gray-500 hover:text-gray-700 text-3xl font-bold">&times;</button>
+            </div>
+            <div class="p-6">
+                <div id="companyList"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Slip Generator - Multi Company</title>
+    <link rel="stylesheet" href="salary_slip_styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💰 Salary Slip Generator</h1>
+            <p>Generate professional salary slips for multiple companies</p>
+        </header>
+
+        <div class="main-content">
+            <div class="form-section">
+                <h2>Company & Template Selection</h2>
+                
+                <div class="form-group">
+                    <label for="companySelect">Select Company:</label>
+                    <select id="companySelect" onchange="loadCompanyTemplate()">
+                        <option value="">-- Select Company --</option>
+                        <option value="new">+ Add New Company</option>
+                    </select>
+                    <button type="button" class="btn-secondary" onclick="showCompanyManager()">Manage Companies</button>
+                </div>
+
+                <div id="companyForm" style="display: none;">
+                    <h3>Add/Edit Company Details</h3>
+                    <div class="form-group">
+                        <label for="companyName">Company Name:</label>
+                        <input type="text" id="companyName" placeholder="e.g., ANGINATAPP INNOVATIONS PRIVATE LIMITED">
+                    </div>
+                    <div class="form-group">
+                        <label for="companyAddress">Company Address:</label>
+                        <textarea id="companyAddress" rows="3" placeholder="Full company address"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="companyEmail">Company Email:</label>
+                        <input type="email" id="companyEmail" placeholder="hr@company.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="companyPhone">Company Phone:</label>
+                        <input type="text" id="companyPhone" placeholder="+91-XXXXXXXXXX">
+                    </div>
+                    <div class="form-group">
+                        <label for="companyLogo">Company Logo Text (Optional):</label>
+                        <input type="text" id="companyLogo" placeholder="e.g., Anginat">
+                    </div>
+                    <button type="button" class="btn-primary" onclick="saveCompany()">Save Company</button>
+                    <button type="button" class="btn-secondary" onclick="cancelCompanyForm()">Cancel</button>
+                </div>
+
+                <h2>Employee Information</h2>
+                <div class="form-group">
+                    <label for="employeeName">Employee Name:</label>
+                    <input type="text" id="employeeName" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="employeeId">Employee ID:</label>
+                    <input type="text" id="employeeId" placeholder="e.g., ANG/EMP/026">
+                </div>
+                <div class="form-group">
+                    <label for="designation">Designation:</label>
+                    <input type="text" id="designation" placeholder="e.g., Full Stack Developer" required>
+                </div>
+                <div class="form-group">
+                    <label for="dateOfJoining">Date of Joining:</label>
+                    <input type="date" id="dateOfJoining">
+                </div>
+                <div class="form-group">
+                    <label for="pan">PAN Number:</label>
+                    <input type="text" id="pan" placeholder="e.g., CHSPT3151Q" maxlength="10">
+                </div>
+                <div class="form-group">
+                    <label for="bankName">Bank Name:</label>
+                    <input type="text" id="bankName" placeholder="e.g., UCO Bank">
+                </div>
+                <div class="form-group">
+                    <label for="accountNumber">Account Number:</label>
+                    <input type="text" id="accountNumber" placeholder="e.g., 1530110045114">
+                </div>
+                <div class="form-group">
+                    <label for="ifscCode">IFSC Code:</label>
+                    <input type="text" id="ifscCode" placeholder="e.g., UCBA0000153">
+                </div>
+
+                <h2>Salary Period</h2>
+                <div class="form-group">
+                    <label for="salaryMonth">Salary Month:</label>
+                    <select id="salaryMonth">
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August">August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November">November</option>
+                        <option value="December">December</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="salaryYear">Salary Year:</label>
+                    <input type="number" id="salaryYear" min="2000" max="2100" value="2025">
+                </div>
+                <div class="form-group">
+                    <label for="daysInMonth">Days in Month:</label>
+                    <input type="number" id="daysInMonth" min="28" max="31" value="31">
+                </div>
+                <div class="form-group">
+                    <label for="effectiveWorkDays">Effective Work Days:</label>
+                    <input type="number" id="effectiveWorkDays" min="0" max="31" value="25">
+                </div>
+
+                <h2>Earnings</h2>
+                <div class="form-group">
+                    <label for="basicSalary">Basic Salary (₹):</label>
+                    <input type="number" id="basicSalary" placeholder="e.g., 20000" step="0.01" onchange="calculateTotals()">
+                </div>
+                <div class="form-group">
+                    <label for="hra">House Rent Allowance - HRA (₹):</label>
+                    <input type="number" id="hra" placeholder="e.g., 2500" step="0.01" onchange="calculateTotals()">
+                </div>
+                <div class="form-group">
+                    <label for="conveyanceAllowance">Conveyance Allowance (₹):</label>
+                    <input type="number" id="conveyanceAllowance" placeholder="e.g., 1000" step="0.01" onchange="calculateTotals()">
+                </div>
+                <div class="form-group">
+                    <label for="otherAllowances">Other Allowances (₹):</label>
+                    <input type="number" id="otherAllowances" placeholder="e.g., 1500" step="0.01" onchange="calculateTotals()">
+                </div>
+                <div class="form-group">
+                    <label for="grossSalary">Gross Salary (₹):</label>
+                    <input type="number" id="grossSalary" readonly class="readonly">
+                </div>
+
+                <h2>Deductions</h2>
+                <div class="form-group">
+                    <label for="providentFund">Provident Fund - PF (₹):</label>
+                    <input type="number" id="providentFund" placeholder="e.g., 0" step="0.01" value="0" onchange="calculateTotals()">
+                </div>
+                <div class="form-group">
+                    <label for="professionalTax">Professional Tax (₹):</label>
+                    <input type="number" id="professionalTax" placeholder="e.g., 0" step="0.01" value="0" onchange="calculateTotals()">
+                </div>
+                <div class="form-group">
+                    <label for="incomeTax">Income Tax - TDS (₹):</label>
+                    <input type="number" id="incomeTax" placeholder="e.g., 0" step="0.01" value="0" onchange="calculateTotals()">
+                </div>
+                <div class="form-group">
+                    <label for="otherDeductions">Other Deductions (₹):</label>
+                    <input type="number" id="otherDeductions" placeholder="e.g., 4838.71" step="0.01" value="0" onchange="calculateTotals()">
+                </div>
+                <div class="form-group">
+                    <label for="totalDeductions">Total Deductions (₹):</label>
+                    <input type="number" id="totalDeductions" readonly class="readonly">
+                </div>
+                <div class="form-group">
+                    <label for="netPayable">Net Payable (₹):</label>
+                    <input type="number" id="netPayable" readonly class="readonly highlight">
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn-primary" onclick="generateSalarySlip()">Generate Salary Slip</button>
+                    <button type="button" class="btn-secondary" onclick="previewSalarySlip()">Preview</button>
+                    <button type="button" class="btn-secondary" onclick="clearForm()">Clear Form</button>
+                </div>
+            </div>
+
+            <div class="preview-section" id="previewSection" style="display: none;">
+                <h2>Preview</h2>
+                <div id="previewContent" class="preview-content"></div>
+                <div class="button-group">
+                    <button type="button" class="btn-primary" onclick="downloadPDF()">Download PDF</button>
+                    <button type="button" class="btn-secondary" onclick="closePreview()">Close Preview</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Company Manager Modal -->
+    <div id="companyManagerModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeCompanyManager()">&times;</span>
+            <h2>Manage Companies</h2>
+            <div id="companyList"></div>
+        </div>
+    </div>
+
+    <script src="salary_slip_script.js"></script>
+</body>
+</html>
+

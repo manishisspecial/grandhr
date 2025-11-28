@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relieving Letter Generator - Multi Company</title>
+    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/relieving-letter.js"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700">
+    <div class="container mx-auto px-4 py-6 max-w-7xl">
+        <header class="text-center mb-8">
+            <a href="/" class="inline-block mb-4 text-white hover:text-primary-100 transition-colors">← Back to Home</a>
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">👋 Relieving Letter Generator</h1>
+            <p class="text-xl text-white/90">Generate professional relieving letters</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="space-y-6">
+                <!-- Company Selection -->
+                <div class="card shadow-xl">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-2xl">🏢</span>
+                        <h2 class="section-title mb-0 flex-1">Company Selection</h2>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="companySelect" class="form-label">Select Company:</label>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <select id="companySelect" onchange="loadCompanyTemplate()" class="form-input flex-1">
+                                    <option value="">-- Select Company --</option>
+                                    <option value="new">+ Add New Company</option>
+                                </select>
+                                <button type="button" class="btn-secondary whitespace-nowrap" onclick="showCompanyManager()">Manage</button>
+                            </div>
+                        </div>
+                        <div id="companyForm" class="hidden space-y-4 p-4 bg-gray-50 rounded-lg border-2 border-primary-200">
+                            <h3 class="text-lg font-bold text-primary-600">Add/Edit Company</h3>
+                            <div><label for="companyName" class="form-label">Company Name:</label>
+                                <input type="text" id="companyName" class="form-input" placeholder="Company Name"></div>
+                            <div><label for="companyAddress" class="form-label">Address:</label>
+                                <textarea id="companyAddress" rows="3" class="form-input" placeholder="Full address"></textarea></div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div><label for="companyEmail" class="form-label">Email:</label>
+                                    <input type="email" id="companyEmail" class="form-input" placeholder="hr@company.com"></div>
+                                <div><label for="companyPhone" class="form-label">Phone:</label>
+                                    <input type="text" id="companyPhone" class="form-input" placeholder="+91-XXXXXXXXXX"></div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div><label for="authorizedSignatory" class="form-label">Signatory Name:</label>
+                                    <input type="text" id="authorizedSignatory" class="form-input" placeholder="HR Manager"></div>
+                                <div><label for="signatoryDesignation" class="form-label">Signatory Designation:</label>
+                                    <input type="text" id="signatoryDesignation" class="form-input" placeholder="HR Manager"></div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button type="button" class="btn-primary flex-1" onclick="saveCompany()">Save</button>
+                                <button type="button" class="btn-secondary flex-1" onclick="cancelCompanyForm()">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Employee Information -->
+                <div class="card shadow-xl">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-2xl">👤</span>
+                        <h2 class="section-title mb-0 flex-1">Employee Information</h2>
+                    </div>
+                    <div class="space-y-4">
+                        <div><label for="employeeName" class="form-label">Employee Name: <span class="text-red-500">*</span></label>
+                            <input type="text" id="employeeName" class="form-input" placeholder="Full Name" required></div>
+                        <div><label for="employeeId" class="form-label">Employee ID: <span class="text-red-500">*</span></label>
+                            <input type="text" id="employeeId" class="form-input" placeholder="Employee ID" required></div>
+                        <div><label for="employeeDesignation" class="form-label">Designation: <span class="text-red-500">*</span></label>
+                            <input type="text" id="employeeDesignation" class="form-input" placeholder="e.g., Software Developer" required></div>
+                        <div><label for="employeeDepartment" class="form-label">Department:</label>
+                            <input type="text" id="employeeDepartment" class="form-input" placeholder="e.g., Engineering"></div>
+                    </div>
+                </div>
+
+                <!-- Employment Details -->
+                <div class="card shadow-xl">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-2xl">📅</span>
+                        <h2 class="section-title mb-0 flex-1">Employment Details</h2>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div><label for="joiningDate" class="form-label">Date of Joining: <span class="text-red-500">*</span></label>
+                                <input type="date" id="joiningDate" class="form-input" required></div>
+                            <div><label for="relievingDate" class="form-label">Date of Relieving: <span class="text-red-500">*</span></label>
+                                <input type="date" id="relievingDate" class="form-input" required></div>
+                        </div>
+                        <div><label for="letterDate" class="form-label">Letter Date: <span class="text-red-500">*</span></label>
+                            <input type="date" id="letterDate" class="form-input" required></div>
+                        <div><label for="reasonForLeaving" class="form-label">Reason for Leaving:</label>
+                            <textarea id="reasonForLeaving" rows="3" class="form-input" placeholder="e.g., Personal reasons, Better opportunity, etc."></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button type="button" class="btn-primary flex-1 text-lg py-4" onclick="generateRelievingLetter()">Generate Letter</button>
+                    <button type="button" class="btn-secondary flex-1 py-4" onclick="previewRelievingLetter()">Preview</button>
+                    <button type="button" class="btn-secondary flex-1 py-4" onclick="clearForm()">Clear</button>
+                </div>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="lg:sticky lg:top-6 h-fit">
+                <div id="previewSection" class="hidden card shadow-2xl">
+                    <h2 class="section-title mb-4">Preview</h2>
+                    <div id="previewContent" class="preview-content bg-white p-6 rounded-lg border-2 border-gray-200 max-h-[calc(100vh-200px)] overflow-y-auto"></div>
+                    <div class="flex flex-col sm:flex-row gap-3 mt-4">
+                        <button type="button" class="btn-primary flex-1" onclick="downloadPDF()">Download PDF</button>
+                        <button type="button" class="btn-secondary flex-1" onclick="closePreview()">Close</button>
+                    </div>
+                </div>
+                <div id="emptyPreview" class="card shadow-xl bg-white/80 text-center py-12">
+                    <div class="text-6xl mb-4">👋</div>
+                    <h3 class="text-xl font-bold text-gray-600 mb-2">Preview Will Appear Here</h3>
+                    <p class="text-gray-500">Fill the form and click "Preview"</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Company Manager Modal -->
+    <div id="companyManagerModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-gray-800">Manage Companies</h2>
+                <button onclick="closeCompanyManager()" class="text-gray-500 hover:text-gray-700 text-3xl font-bold">&times;</button>
+            </div>
+            <div class="p-6"><div id="companyList"></div></div>
+        </div>
+    </div>
+</body>
+</html>
+

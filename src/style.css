@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans antialiased;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-3 bg-gray-100 text-gray-800 font-semibold rounded-lg shadow hover:bg-gray-200 transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2;
+  }
+  
+  .form-input {
+    @apply w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all duration-200;
+  }
+  
+  .form-label {
+    @apply block mb-2 font-semibold text-gray-700 text-sm;
+  }
+  
+  .section-title {
+    @apply text-primary-500 mb-4 pb-2 border-b-2 border-gray-200 text-xl font-bold;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-lg p-6 border border-gray-100;
+  }
+  
+  .preview-content {
+    @apply text-sm leading-relaxed;
+  }
+  
+  .logo-preview-container {
+    @apply mt-2 p-3 bg-white border-2 border-gray-300 rounded-lg;
+  }
+  
+  .logo-preview-img {
+    @apply max-h-20 border-2 border-gray-300 rounded p-2 bg-white object-contain;
+  }
+}
+

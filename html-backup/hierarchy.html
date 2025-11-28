@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizational Hierarchy - Document Generator</title>
+    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/hierarchy.js"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700">
+    <div class="container mx-auto px-4 py-6 max-w-7xl">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <a href="/" class="inline-block mb-4 text-white hover:text-primary-100 transition-colors">
+                ← Back to Home
+            </a>
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">🏢 Organizational Hierarchy</h1>
+            <p class="text-xl text-white/90">Manage your company's organizational structure</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <!-- Hierarchy Tree View - 60% width (3/5 columns) -->
+            <div class="lg:col-span-3">
+                <div class="card shadow-xl">
+                    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                        <h2 class="section-title mb-0 flex-1">Organization Chart</h2>
+                        <div class="flex gap-2">
+                            <button onclick="exportToImage()" class="btn-secondary text-sm">Export Image</button>
+                            <button onclick="exportToPDF()" class="btn-secondary text-sm">Export PDF</button>
+                            <button onclick="exportHierarchy()" class="btn-secondary text-sm">Export JSON</button>
+                        </div>
+                    </div>
+                    <div id="hierarchyTree" class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 min-h-[600px] overflow-auto">
+                        <p class="text-gray-500 text-center py-20">Click "Add Employee" to start building your hierarchy</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employee Management Panel - 40% width (2/5 columns) -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Add/Edit Employee Form -->
+                <div class="card shadow-xl">
+                    <h2 class="section-title" id="formTitle">Add Employee</h2>
+                    <form id="employeeForm" class="space-y-4">
+                        <input type="hidden" id="employeeId">
+                        
+                        <div>
+                            <label for="employeeName" class="form-label">
+                                Employee Name: <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="employeeName" class="form-input" placeholder="Full Name" required>
+                        </div>
+                        
+                        <div>
+                            <label for="employeeDesignation" class="form-label">
+                                Designation: <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="employeeDesignation" class="form-input" placeholder="e.g., Director - Operations" required>
+                        </div>
+                        
+                        <div>
+                            <label for="reportingTo" class="form-label">Reports To:</label>
+                            <select id="reportingTo" class="form-input">
+                                <option value="">-- Select Manager --</option>
+                                <option value="root">MD & Co-Founder (Top Level)</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="employeeDepartment" class="form-label">Department:</label>
+                            <input type="text" id="employeeDepartment" class="form-input" placeholder="e.g., Operations, Sales, HR">
+                        </div>
+                        
+                        <div>
+                            <label for="employeeEmail" class="form-label">Email:</label>
+                            <input type="email" id="employeeEmail" class="form-input" placeholder="email@company.com">
+                        </div>
+                        
+                        <div class="flex gap-2">
+                            <button type="submit" class="btn-primary flex-1">Save Employee</button>
+                            <button type="button" onclick="resetForm()" class="btn-secondary flex-1">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card shadow-xl">
+                    <h2 class="section-title">Quick Actions</h2>
+                    <div class="space-y-2">
+                        <button onclick="loadDefaultHierarchy()" class="btn-secondary w-full">Load Default Hierarchy</button>
+                        <button onclick="clearHierarchy()" class="btn-secondary w-full bg-red-50 text-red-700 hover:bg-red-100">Clear All</button>
+                        <button onclick="importHierarchy()" class="btn-secondary w-full">Import from JSON</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
