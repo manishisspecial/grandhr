@@ -25,20 +25,45 @@ const HRDashboard = () => {
         ? '/dashboard/admin' 
         : '/dashboard/employee';
       const response = await api.get(endpoint);
-      setDashboardData(response.data);
+      
+      // Transform backend response to match frontend expectations
+      if (isEmployer) {
+        // Admin dashboard returns: { stats: { totalEmployees, pendingLeaves, todayAttendance, monthlyPayrolls }, ... }
+        const data = response.data;
+        setDashboardData({
+          totalEmployees: data.stats?.totalEmployees || 0,
+          pendingLeaves: data.stats?.pendingLeaves || 0,
+          todayAttendance: data.stats?.todayAttendance || 0,
+          pendingPayrolls: data.stats?.monthlyPayrolls || 0,
+        });
+      } else {
+        // Employee dashboard returns: { stats: { pendingLeaves, approvedLeaves, totalWorkDays, totalHours }, ... }
+        const data = response.data;
+        setDashboardData({
+          myLeaves: data.stats?.pendingLeaves || 0,
+          myAttendance: data.stats?.totalWorkDays || 0,
+          myPayrolls: data.recentPayrolls?.length || 0,
+        });
+      }
     } catch (err) {
-      // If endpoint doesn't exist, try employee endpoint
-      if (err.response?.status === 404) {
+      // If endpoint doesn't exist or unauthorized, try employee endpoint
+      if (err.response?.status === 404 || err.response?.status === 403) {
         try {
           const response = await api.get('/dashboard/employee');
-          setDashboardData(response.data);
+          const data = response.data;
+          setDashboardData({
+            myLeaves: data.stats?.pendingLeaves || 0,
+            myAttendance: data.stats?.totalWorkDays || 0,
+            myPayrolls: data.recentPayrolls?.length || 0,
+          });
         } catch (err2) {
-          setError(err2.response?.data?.message || 'Failed to load dashboard data');
+          setError(err2.response?.data?.message || 'Failed to load dashboard data. Make sure you are logged in and the backend is running.');
         }
       } else {
-        setError(err.response?.data?.message || 'Failed to load dashboard data');
+        const errorMsg = err.response?.data?.message || err.message || 'Failed to load dashboard data';
+        setError(errorMsg);
+        console.error('Dashboard error:', err);
       }
-      console.error('Failed to fetch dashboard data:', err);
     } finally {
       setLoading(false);
     }
@@ -63,8 +88,23 @@ const HRDashboard = () => {
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center max-w-md">
             <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <p className="text-red-600 mb-4">{error}</p>
-            <p className="text-sm text-gray-600">Make sure the backend API is running and you are logged in.</p>
+            <p className="text-red-600 mb-4 font-semibold">{error}</p>
+            <div className="bg-gray-50 rounded-lg p-4 text-left text-sm text-gray-600 space-y-2">
+              <p className="font-semibold">Troubleshooting steps:</p>
+              <ol className="list-decimal list-inside space-y-1">
+                <li>Make sure backend API is running (check <code className="bg-gray-200 px-1 rounded">backend/</code> folder)</li>
+                <li>Verify you are logged in to HR system</li>
+                <li>Check <code className="bg-gray-200 px-1 rounded">VITE_API_URL</code> in frontend/.env</li>
+                <li>Open browser console (F12) to see detailed errors</li>
+                <li>Try refreshing the page</li>
+              </ol>
+            </div>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-4 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+            >
+              Refresh Page
+            </button>
           </div>
         </div>
       </Layout>
@@ -96,22 +136,22 @@ const HRDashboard = () => {
                 <>
                   <div className="card">
                     <div className="text-3xl mb-2">👥</div>
-                    <div className="text-3xl font-bold text-gray-800">{dashboardData.totalEmployees || 0}</div>
+                    <div className="text-3xl font-bold text-gray-800">{dashboardData.totalEmployees ?? 0}</div>
                     <div className="text-gray-600">Total Employees</div>
                   </div>
                   <div className="card">
                     <div className="text-3xl mb-2">📅</div>
-                    <div className="text-3xl font-bold text-gray-800">{dashboardData.pendingLeaves || 0}</div>
+                    <div className="text-3xl font-bold text-gray-800">{dashboardData.pendingLeaves ?? 0}</div>
                     <div className="text-gray-600">Pending Leaves</div>
                   </div>
                   <div className="card">
                     <div className="text-3xl mb-2">⏰</div>
-                    <div className="text-3xl font-bold text-gray-800">{dashboardData.todayAttendance || 0}</div>
+                    <div className="text-3xl font-bold text-gray-800">{dashboardData.todayAttendance ?? 0}</div>
                     <div className="text-gray-600">Today's Attendance</div>
                   </div>
                   <div className="card">
                     <div className="text-3xl mb-2">💰</div>
-                    <div className="text-3xl font-bold text-gray-800">{dashboardData.pendingPayrolls || 0}</div>
+                    <div className="text-3xl font-bold text-gray-800">{dashboardData.pendingPayrolls ?? 0}</div>
                     <div className="text-gray-600">Pending Payrolls</div>
                   </div>
                 </>
@@ -119,17 +159,17 @@ const HRDashboard = () => {
                 <>
                   <div className="card">
                     <div className="text-3xl mb-2">📅</div>
-                    <div className="text-3xl font-bold text-gray-800">{dashboardData.myLeaves || 0}</div>
+                    <div className="text-3xl font-bold text-gray-800">{dashboardData.myLeaves ?? 0}</div>
                     <div className="text-gray-600">My Leaves</div>
                   </div>
                   <div className="card">
                     <div className="text-3xl mb-2">⏰</div>
-                    <div className="text-3xl font-bold text-gray-800">{dashboardData.myAttendance || 0}</div>
+                    <div className="text-3xl font-bold text-gray-800">{dashboardData.myAttendance ?? 0}</div>
                     <div className="text-gray-600">My Attendance</div>
                   </div>
                   <div className="card">
                     <div className="text-3xl mb-2">💰</div>
-                    <div className="text-3xl font-bold text-gray-800">{dashboardData.myPayrolls || 0}</div>
+                    <div className="text-3xl font-bold text-gray-800">{dashboardData.myPayrolls ?? 0}</div>
                     <div className="text-gray-600">My Payrolls</div>
                   </div>
                   <div className="card">
@@ -143,7 +183,13 @@ const HRDashboard = () => {
           </>
         ) : (
           <div className="card text-center py-12">
-            <p className="text-gray-600">No data available</p>
+            <p className="text-gray-600 mb-4">No dashboard data available</p>
+            <p className="text-sm text-gray-500">
+              This might be because:
+              <br />• Backend API is not running
+              <br />• No data exists yet in the database
+              <br />• Check browser console for errors
+            </p>
           </div>
         )}
       </div>
