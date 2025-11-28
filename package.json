@@ -1,12 +1,13 @@
 {
-  "name": "multi-company-document-generator",
+  "name": "grandhr",
   "version": "1.0.0",
-  "description": "Professional web-based applications for generating Offer Letters and Salary Slips for multiple companies",
+  "description": "GrandHR - Complete HR Management Solution with Document Generation, Hierarchy Management, and HR Operations",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "vercel-build": "vite build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.86.0",

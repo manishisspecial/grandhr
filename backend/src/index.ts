@@ -80,11 +80,11 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 export default app;
 
 // Only start server if not in Vercel environment
-if (process.env.VERCEL !== '1') {
+if (process.env.VERCEL !== '1' && !process.env.VERCEL_ENV) {
   const PORT = process.env.PORT || 5000;
   
   app.listen(PORT, () => {
-    console.log(`🚀 SquadHR Server running on port ${PORT}`);
+    console.log(`🚀 GrandHR Backend Server running on port ${PORT}`);
   });
 
   // Graceful shutdown

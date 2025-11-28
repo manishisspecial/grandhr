@@ -1,5 +1,6 @@
-// Vercel Serverless Function Entry Point
-// This exports the Express app for Vercel
 import app from '../src/index';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-export default app;
+export default (req: VercelRequest, res: VercelResponse) => {
+  return app(req, res);
+};
