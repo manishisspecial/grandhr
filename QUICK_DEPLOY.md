@@ -8,7 +8,7 @@
 2. **Add New Project** → Import `manishisspecial/grandhr`
 3. **Configure:**
    - Framework: **Other**
-   - Root Directory: **`backend`**
+   - Root Directory: **`backend`** ⚠️ **Change from default `.` to `backend`**
    - Build Command: **`npm run vercel-build`**
    - Output Directory: **(leave empty)**
 4. **Environment Variables:**
@@ -25,7 +25,7 @@
 1. **Add New Project** → Import same repo
 2. **Configure:**
    - Framework: **Vite** (auto-detected)
-   - Root Directory: **`.`** (root)
+   - Root Directory: **`.`** (root - default) ⚠️ **Keep as root, frontend files are here**
    - Build: **`npm run build`** (auto)
    - Output: **`dist`** (auto)
 3. **Environment Variables:**

@@ -26,7 +26,7 @@
 3. Import from GitHub: Select `manishisspecial/grandhr`
 4. **Configure Project:**
    - **Framework Preset:** Other
-   - **Root Directory:** `backend`
+   - **Root Directory:** `backend` ⚠️ **IMPORTANT: Change from default `.` to `backend`**
    - **Build Command:** `npm run vercel-build`
    - **Output Directory:** (leave empty)
    - **Install Command:** `npm install`
@@ -62,8 +62,8 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 1. In Vercel dashboard, click **"Add New"** → **"Project"**
 2. Import from GitHub: Select `manishisspecial/grandhr` (same repo)
 3. **Configure Project:**
-   - **Framework Preset:** Vite
-   - **Root Directory:** `.` (root)
+   - **Framework Preset:** Vite (auto-detected)
+   - **Root Directory:** `.` (root - default, where frontend files are) ⚠️ **Keep as root, NOT `frontend`**
    - **Build Command:** `npm run build` (auto-detected)
    - **Output Directory:** `dist` (auto-detected)
    - **Install Command:** `npm install`
