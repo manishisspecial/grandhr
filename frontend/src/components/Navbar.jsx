@@ -19,13 +19,31 @@ const Navbar = () => {
     { name: 'HR Management', path: '/hr', icon: '👔', hasDropdown: true },
   ];
 
-  const hrMenuItems = [
-    { name: 'Dashboard', path: '/hr/dashboard', icon: '📊' },
-    { name: 'Employees', path: '/hr/employees', icon: '👥' },
-    { name: 'Leaves', path: '/hr/leaves', icon: '📅' },
-    { name: 'Attendance', path: '/hr/attendance', icon: '⏰' },
-    { name: 'Payroll', path: '/hr/payroll', icon: '💰' },
-  ];
+  const getHRMenuItems = () => {
+    const hrUser = JSON.parse(localStorage.getItem('hr_user') || 'null');
+    const isEmployer = hrUser?.role === 'ADMIN' || hrUser?.role === 'HR' || hrUser?.role === 'MANAGER';
+    
+    const baseItems = [
+      { name: 'Dashboard', path: '/hr/dashboard', icon: '📊' },
+      { name: 'Leaves', path: '/hr/leaves', icon: '📅' },
+      { name: 'Attendance', path: '/hr/attendance', icon: '⏰' },
+      { name: 'Payroll', path: '/hr/payroll', icon: '💰' },
+    ];
+    
+    if (isEmployer) {
+      return [
+        ...baseItems,
+        { name: 'Employees', path: '/hr/employees', icon: '👥' },
+      ];
+    } else {
+      return [
+        ...baseItems,
+        { name: 'My Profile', path: '/hr/employees', icon: '👤' },
+      ];
+    }
+  };
+  
+  const hrMenuItems = getHRMenuItems();
 
   const documentItems = [
     { name: 'Offer Letter', path: '/offer-letter', icon: '📝' },

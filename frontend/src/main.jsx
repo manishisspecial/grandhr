@@ -16,6 +16,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import HRLogin from './components/HRLogin';
+import HRRegister from './components/HRRegister';
 import HRDashboard from './components/HRDashboard';
 import Employees from './components/Employees';
 import Leaves from './components/Leaves';
@@ -36,6 +37,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           
           {/* HR Auth */}
           <Route path="/hr/login" element={<HRLogin />} />
+          <Route path="/hr/register" element={<HRRegister />} />
           
           {/* App pages - with navbar */}
           <Route element={<AppLayout />}>

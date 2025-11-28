@@ -46,34 +46,33 @@ const Landing = () => {
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
             Welcome to GrandHR
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-white/90 max-w-3xl mx-auto">
-            Your complete HR management solution. Generate professional documents, manage organizational hierarchy, and streamline your HR processes.
+          <p className="text-xl md:text-2xl mb-4 text-white/90 max-w-3xl mx-auto">
+            Complete HR solution for <strong>Employers</strong> and <strong>Employees</strong>
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {isAuthenticated ? (
-              <Link
-                to="/hierarchy"
-                className="px-8 py-4 bg-white text-primary-600 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg"
-              >
-                Go to Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link
-                  to="/register"
-                  className="px-8 py-4 bg-white text-primary-600 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg"
-                >
-                  Get Started Free
-                </Link>
-                <Link
-                  to="/login"
-                  className="px-8 py-4 bg-primary-700 text-white rounded-lg font-semibold text-lg hover:bg-primary-800 transition-colors shadow-lg border-2 border-white/20"
-                >
-                  Sign In
-                </Link>
-              </>
-            )}
+          <p className="text-lg mb-8 text-white/80 max-w-2xl mx-auto">
+            Generate professional documents, manage organizational hierarchy, track attendance, manage leaves, and access payroll - all in one platform.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <Link
+              to="/offer-letter"
+              className="px-8 py-4 bg-white text-primary-600 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors shadow-lg"
+            >
+              📄 Generate Documents (Free)
+            </Link>
+            <Link
+              to="/hr/login"
+              className="px-8 py-4 bg-primary-700 text-white rounded-lg font-semibold text-lg hover:bg-primary-800 transition-colors shadow-lg border-2 border-white/20"
+            >
+              👔 HR Management Login
+            </Link>
           </div>
+          {!isAuthenticated && (
+            <div className="text-sm text-white/70">
+              <Link to="/register" className="underline hover:text-white">Register for Hierarchy Management</Link>
+              {' • '}
+              <Link to="/hr/login" className="underline hover:text-white">Login as Employee/Employer</Link>
+            </div>
+          )}
         </div>
       </section>
 
@@ -109,8 +108,11 @@ const Landing = () => {
           <h2 className="text-4xl font-bold text-center mb-4 text-gray-800">
             Complete HR Management
           </h2>
+          <p className="text-center text-gray-600 mb-4 max-w-2xl mx-auto">
+            For <strong>Employers</strong>: Manage your entire workforce, approve leaves, track attendance, and process payroll.
+          </p>
           <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-            Manage your entire HR operations with our comprehensive suite of tools.
+            For <strong>Employees</strong>: View your profile, apply for leaves, clock in/out, and access your payslips.
           </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Link to="/hr/dashboard" className="group bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-primary-500 hover:shadow-xl transition-all transform hover:-translate-y-1">
@@ -145,11 +147,16 @@ const Landing = () => {
       {/* Document Types Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-4 text-gray-800">
-            Generate Professional Documents
-          </h2>
+          <div className="text-center mb-4">
+            <span className="inline-block px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-semibold mb-4">
+              ✨ Free to Use - No Login Required
+            </span>
+            <h2 className="text-4xl font-bold text-gray-800">
+              Generate Professional Documents
+            </h2>
+          </div>
           <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-            Create all your HR documents in minutes. Export to PDF, customize templates, and maintain consistency across your organization.
+            Anyone can create professional HR documents instantly. Export to PDF, customize templates, and maintain consistency. Perfect for employers, employees, and HR professionals.
           </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {documentTypes.map((doc, index) => (

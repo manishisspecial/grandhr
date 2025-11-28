@@ -20,13 +20,24 @@ const HRDashboard = () => {
   const fetchDashboard = async () => {
     try {
       setError(null);
-      const endpoint = hrUser?.role === 'ADMIN' || hrUser?.role === 'HR' 
+      const isEmployer = hrUser?.role === 'ADMIN' || hrUser?.role === 'HR' || hrUser?.role === 'MANAGER';
+      const endpoint = isEmployer 
         ? '/dashboard/admin' 
         : '/dashboard/employee';
       const response = await api.get(endpoint);
       setDashboardData(response.data);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to load dashboard data');
+      // If endpoint doesn't exist, try employee endpoint
+      if (err.response?.status === 404) {
+        try {
+          const response = await api.get('/dashboard/employee');
+          setDashboardData(response.data);
+        } catch (err2) {
+          setError(err2.response?.data?.message || 'Failed to load dashboard data');
+        }
+      } else {
+        setError(err.response?.data?.message || 'Failed to load dashboard data');
+      }
       console.error('Failed to fetch dashboard data:', err);
     } finally {
       setLoading(false);
@@ -60,32 +71,74 @@ const HRDashboard = () => {
     );
   }
 
+  const isEmployer = hrUser?.role === 'ADMIN' || hrUser?.role === 'HR' || hrUser?.role === 'MANAGER';
+  const isEmployee = hrUser?.role === 'EMPLOYEE';
+
   return (
-    <Layout title="Dashboard" description="HR Management Dashboard" icon="📊">
+    <Layout 
+      title="Dashboard" 
+      description={isEmployer ? "HR Management Dashboard" : "Employee Dashboard"} 
+      icon="📊"
+    >
       <div className="space-y-6">
+        {isEmployee && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-blue-800">
+              <strong>Welcome, Employee!</strong> View your leaves, attendance, and payroll information below.
+            </p>
+          </div>
+        )}
+
         {dashboardData ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="card">
-                <div className="text-3xl mb-2">👥</div>
-                <div className="text-3xl font-bold text-gray-800">{dashboardData.totalEmployees || 0}</div>
-                <div className="text-gray-600">Total Employees</div>
-              </div>
-              <div className="card">
-                <div className="text-3xl mb-2">📅</div>
-                <div className="text-3xl font-bold text-gray-800">{dashboardData.pendingLeaves || 0}</div>
-                <div className="text-gray-600">Pending Leaves</div>
-              </div>
-              <div className="card">
-                <div className="text-3xl mb-2">⏰</div>
-                <div className="text-3xl font-bold text-gray-800">{dashboardData.todayAttendance || 0}</div>
-                <div className="text-gray-600">Today's Attendance</div>
-              </div>
-              <div className="card">
-                <div className="text-3xl mb-2">💰</div>
-                <div className="text-3xl font-bold text-gray-800">{dashboardData.pendingPayrolls || 0}</div>
-                <div className="text-gray-600">Pending Payrolls</div>
-              </div>
+              {isEmployer ? (
+                <>
+                  <div className="card">
+                    <div className="text-3xl mb-2">👥</div>
+                    <div className="text-3xl font-bold text-gray-800">{dashboardData.totalEmployees || 0}</div>
+                    <div className="text-gray-600">Total Employees</div>
+                  </div>
+                  <div className="card">
+                    <div className="text-3xl mb-2">📅</div>
+                    <div className="text-3xl font-bold text-gray-800">{dashboardData.pendingLeaves || 0}</div>
+                    <div className="text-gray-600">Pending Leaves</div>
+                  </div>
+                  <div className="card">
+                    <div className="text-3xl mb-2">⏰</div>
+                    <div className="text-3xl font-bold text-gray-800">{dashboardData.todayAttendance || 0}</div>
+                    <div className="text-gray-600">Today's Attendance</div>
+                  </div>
+                  <div className="card">
+                    <div className="text-3xl mb-2">💰</div>
+                    <div className="text-3xl font-bold text-gray-800">{dashboardData.pendingPayrolls || 0}</div>
+                    <div className="text-gray-600">Pending Payrolls</div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="card">
+                    <div className="text-3xl mb-2">📅</div>
+                    <div className="text-3xl font-bold text-gray-800">{dashboardData.myLeaves || 0}</div>
+                    <div className="text-gray-600">My Leaves</div>
+                  </div>
+                  <div className="card">
+                    <div className="text-3xl mb-2">⏰</div>
+                    <div className="text-3xl font-bold text-gray-800">{dashboardData.myAttendance || 0}</div>
+                    <div className="text-gray-600">My Attendance</div>
+                  </div>
+                  <div className="card">
+                    <div className="text-3xl mb-2">💰</div>
+                    <div className="text-3xl font-bold text-gray-800">{dashboardData.myPayrolls || 0}</div>
+                    <div className="text-gray-600">My Payrolls</div>
+                  </div>
+                  <div className="card">
+                    <div className="text-3xl mb-2">👤</div>
+                    <div className="text-3xl font-bold text-gray-800">1</div>
+                    <div className="text-gray-600">My Profile</div>
+                  </div>
+                </>
+              )}
             </div>
           </>
         ) : (

@@ -6,6 +6,8 @@ const Employees = () => {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const hrUser = JSON.parse(localStorage.getItem('hr_user') || 'null');
+  const isEmployer = hrUser?.role === 'ADMIN' || hrUser?.role === 'HR' || hrUser?.role === 'MANAGER';
 
   useEffect(() => {
     fetchEmployees();
@@ -14,31 +16,62 @@ const Employees = () => {
   const fetchEmployees = async () => {
     try {
       setLoading(true);
-      const params = search ? { search } : {};
-      const response = await api.get('/employees', { params });
-      setEmployees(response.data.employees || []);
+      if (isEmployer) {
+        // Employers see all employees
+        const params = search ? { search } : {};
+        const response = await api.get('/employees', { params });
+        setEmployees(response.data.employees || []);
+      } else {
+        // Employees see only their own profile
+        const response = await api.get('/employees/my-profile');
+        setEmployees(response.data.employee ? [response.data.employee] : []);
+      }
     } catch (error) {
       console.error('Failed to fetch employees:', error);
+      // If my-profile endpoint doesn't exist, try regular endpoint
+      if (!isEmployer) {
+        try {
+          const response = await api.get('/employees');
+          const allEmployees = response.data.employees || [];
+          const myEmployee = allEmployees.find(emp => emp.userId === hrUser?.id);
+          setEmployees(myEmployee ? [myEmployee] : []);
+        } catch (err) {
+          console.error('Failed to fetch employee profile:', err);
+        }
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Layout title="Employees" description="Manage employee information" icon="👥">
+    <Layout 
+      title={isEmployer ? "Employees" : "My Profile"} 
+      description={isEmployer ? "Manage employee information" : "View your employee profile"} 
+      icon="👥"
+    >
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="relative flex-1 max-w-md">
-            <input
-              type="text"
-              placeholder="Search employees..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="form-input pl-10"
-            />
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2">🔍</span>
+        {isEmployer && (
+          <div className="flex items-center justify-between">
+            <div className="relative flex-1 max-w-md">
+              <input
+                type="text"
+                placeholder="Search employees..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="form-input pl-10"
+              />
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2">🔍</span>
+            </div>
           </div>
-        </div>
+        )}
+        {!isEmployer && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-blue-800">
+              <strong>Employee View:</strong> You can view your own profile information here.
+            </p>
+          </div>
+        )}
 
         {loading ? (
           <div className="text-center py-12">

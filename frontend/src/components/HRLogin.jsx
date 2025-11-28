@@ -74,12 +74,16 @@ const HRLogin = () => {
               {loading ? 'Signing in...' : 'Sign In to HR System'}
             </button>
 
-            <div className="text-center text-sm text-gray-600">
+            <div className="text-center text-sm text-gray-600 space-y-2">
               <p className="mt-4">
-                Note: This is separate from your GrandHR account. 
-                <br />
+                Don't have an account?{' '}
+                <Link to="/hr/register" className="text-primary-600 hover:text-primary-700 font-semibold">
+                  Register as Employee
+                </Link>
+              </p>
+              <p>
                 <Link to="/" className="text-primary-600 hover:text-primary-700 font-semibold">
-                  Back to Home
+                  ← Back to Home
                 </Link>
               </p>
             </div>
