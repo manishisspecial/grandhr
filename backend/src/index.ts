@@ -54,7 +54,7 @@ app.use('/api/', apiLimiter);
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'SquadHR API is running' });
+  res.json({ status: 'ok', message: 'GrandHR API is running' });
 });
 
 // Routes
