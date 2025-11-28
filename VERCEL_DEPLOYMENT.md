@@ -1,220 +1,170 @@
 # Vercel Deployment Guide - GrandHR
 
-## 🚀 Deployment Strategy
+## 📁 Project Structure
 
-**Recommended:** Deploy Frontend and Backend as **separate Vercel projects** for better scalability and management.
-
-## 📋 Pre-Deployment Checklist
-
-### 1. Supabase Setup
-- [ ] Create Supabase project
-- [ ] Run `supabase-complete-schema.sql` in SQL Editor
-- [ ] Get credentials (URL, anon key, database password)
-
-### 2. Environment Variables
-- [ ] Prepare all environment variables (see below)
-- [ ] Have Supabase credentials ready
-
-## 🎯 Deployment Steps
-
-### Step 1: Deploy Backend First
-
-#### 1.1 Create Backend Project in Vercel
-
-1. Go to [vercel.com](https://vercel.com)
-2. Click **"Add New"** → **"Project"**
-3. Import from GitHub: Select `manishisspecial/grandhr`
-4. **Configure Project:**
-   - **Framework Preset:** Other
-   - **Root Directory:** `backend` ⚠️ **IMPORTANT: Change from default `.` to `backend`**
-   - **Build Command:** `npm run vercel-build`
-   - **Output Directory:** (leave empty)
-   - **Install Command:** `npm install`
-
-#### 1.2 Set Backend Environment Variables
-
-In Vercel project settings → Environment Variables, add:
-
-```env
-DATABASE_URL=postgresql://postgres.xxxxx:PASSWORD@aws-0-xx.pooler.supabase.com:6543/postgres?pgbouncer=true
-DIRECT_URL=postgresql://postgres.xxxxx:PASSWORD@aws-0-xx.pooler.supabase.com:5432/postgres
-JWT_SECRET=your-strong-secret-key-here
-JWT_EXPIRES_IN=7d
-PORT=5000
-CORS_ORIGIN=https://your-frontend-url.vercel.app
-NODE_ENV=production
-SUPABASE_URL=https://xxxxx.supabase.co
-SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+```
+grandhr/ (root)
+├── frontend/              # Frontend React app
+│   ├── src/              # Frontend source code
+│   ├── package.json     # Frontend dependencies
+│   ├── vite.config.js   # Vite configuration
+│   └── vercel.json      # Frontend Vercel config
+│
+└── backend/              # Backend API
+    ├── src/             # Backend source code
+    ├── api/             # Vercel serverless entry
+    ├── package.json     # Backend dependencies
+    └── vercel.json      # Backend Vercel config
 ```
 
-#### 1.3 Deploy Backend
+## 🚀 Deployment: Two Separate Projects
 
-1. Click **"Deploy"**
-2. Wait for deployment to complete
-3. **Copy the deployment URL** (e.g., `https://grandhr-backend.vercel.app`)
-4. This is your backend API URL
+### Project 1: Frontend (Frontend Folder)
 
-### Step 2: Deploy Frontend
+**Configuration:**
+- **Root Directory:** `frontend` ⚠️ **IMPORTANT: Change from default `.` to `frontend`**
+- **Framework Preset:** Vite (auto-detected)
+- **Build Command:** `npm run build` (auto-detected)
+- **Output Directory:** `dist` (auto-detected)
+- **Install Command:** `npm install`
 
-#### 2.1 Create Frontend Project in Vercel
-
-1. In Vercel dashboard, click **"Add New"** → **"Project"**
-2. Import from GitHub: Select `manishisspecial/grandhr` (same repo)
-3. **Configure Project:**
-   - **Framework Preset:** Vite (auto-detected)
-   - **Root Directory:** `.` (root - default, where frontend files are) ⚠️ **Keep as root, NOT `frontend`**
-   - **Build Command:** `npm run build` (auto-detected)
-   - **Output Directory:** `dist` (auto-detected)
-   - **Install Command:** `npm install`
-
-#### 2.2 Set Frontend Environment Variables
-
-In Vercel project settings → Environment Variables, add:
-
-```env
+**Environment Variables:**
+```
 VITE_SUPABASE_URL=https://xxxxx.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
-VITE_API_URL=https://grandhr-backend.vercel.app/api
+VITE_API_URL=https://your-backend-url.vercel.app/api
 ```
 
-**Important:** Replace `grandhr-backend.vercel.app` with your actual backend URL from Step 1.3
+**Steps:**
+1. Go to Vercel → Add New Project
+2. Import: `manishisspecial/grandhr`
+3. Framework: **Vite** (auto-detected)
+4. Root Directory: **`frontend`** ⚠️ **Change from default `.` to `frontend`**
+5. Build/Output: Auto-detected (don't change)
+6. Add environment variables
+7. Deploy
+8. Copy frontend URL: `https://grandhr.vercel.app`
 
-#### 2.3 Deploy Frontend
+### Project 2: Backend (Backend Folder)
 
-1. Click **"Deploy"**
-2. Wait for deployment to complete
-3. **Copy the deployment URL** (e.g., `https://grandhr.vercel.app`)
+**Configuration:**
+- **Root Directory:** `backend` ⚠️ **IMPORTANT: Change from default `.` to `backend`**
+- **Framework Preset:** Other
+- **Build Command:** `npm run vercel-build`
+- **Output Directory:** (leave empty)
+- **Install Command:** `npm install`
 
-### Step 3: Update CORS in Backend
+**Environment Variables:**
+```
+DATABASE_URL=postgresql://postgres.xxxxx:PASSWORD@aws-0-xx.pooler.supabase.com:6543/postgres?pgbouncer=true
+DIRECT_URL=postgresql://postgres.xxxxx:PASSWORD@aws-0-xx.pooler.supabase.com:5432/postgres
+JWT_SECRET=your-strong-secret-key
+JWT_EXPIRES_IN=7d
+CORS_ORIGIN=https://grandhr.vercel.app
+NODE_ENV=production
+```
 
-After frontend is deployed:
+**Steps:**
+1. Go to Vercel → Add New Project
+2. Import: `manishisspecial/grandhr` (same repo)
+3. Framework: **Other**
+4. Root Directory: **`backend`** ⚠️ **Change from default `.` to `backend`**
+5. Build Command: **`npm run vercel-build`**
+6. Output Directory: **(leave empty)**
+7. Add environment variables
+8. Deploy
+9. Copy backend URL: `https://grandhr-backend.vercel.app`
 
-1. Go to Backend project in Vercel
-2. Settings → Environment Variables
-3. Update `CORS_ORIGIN` with your frontend URL:
+### Step 3: Update CORS
+
+After both are deployed:
+
+1. Go to **Backend Project** → Settings → Environment Variables
+2. Update `CORS_ORIGIN` with your frontend URL:
    ```
    CORS_ORIGIN=https://grandhr.vercel.app
    ```
-4. Redeploy backend (or it will auto-redeploy)
+3. Redeploy backend (or it auto-redeploys)
 
-## 🔧 Alternative: Single Project Deployment
+## 📋 Quick Checklist
 
-If you prefer to deploy both in one project:
+### Frontend Deployment
+- [ ] Root Directory: `frontend` ⚠️ (not `.`)
+- [ ] Framework: Vite
+- [ ] Environment variables set
+- [ ] Deployed successfully
+- [ ] URL copied
 
-1. Create one Vercel project
-2. Set root directory to `.` (root)
-3. Add `vercel.json` in root (see below)
-4. Deploy both together
+### Backend Deployment
+- [ ] Root Directory: `backend` ⚠️ (not `.`)
+- [ ] Framework: Other
+- [ ] Build Command: `npm run vercel-build`
+- [ ] Environment variables set
+- [ ] Deployed successfully
+- [ ] URL copied
 
-**Note:** This is more complex and less recommended.
-
-## 📁 Project Structure for Vercel
-
-```
-grandhr/
-├── vercel.json              # Frontend Vercel config
-├── package.json             # Frontend dependencies
-├── vite.config.js
-├── src/                     # Frontend code
-├── dist/                    # Build output (auto-generated)
-│
-└── backend/
-    ├── vercel.json          # Backend Vercel config
-    ├── package.json         # Backend dependencies
-    ├── api/
-    │   └── index.ts         # Vercel serverless function
-    └── src/                 # Backend code
-```
+### Post-Deployment
+- [ ] CORS_ORIGIN updated with frontend URL
+- [ ] Frontend VITE_API_URL updated with backend URL
+- [ ] Both projects working
+- [ ] Health check passes
 
 ## 🔍 Verification
 
 ### Test Backend
 ```bash
-curl https://your-backend-url.vercel.app/api/health
+curl https://your-backend.vercel.app/api/health
 ```
-Should return: `{"status":"ok","message":"SquadHR API is running"}`
+Should return: `{"status":"ok","message":"GrandHR API is running"}`
 
 ### Test Frontend
-1. Visit your frontend URL
-2. Test login/register
-3. Test hierarchy feature
-4. Test HR features
+1. Visit: `https://your-frontend.vercel.app`
+2. Should load landing page
+3. Test navigation
+4. Test features
+
+## ⚠️ Important Notes
+
+1. **Root Directory is Critical:**
+   - Frontend: **`frontend`** (where `frontend/src/` and `frontend/package.json` are)
+   - Backend: **`backend`** (where `backend/src/` and `backend/package.json` are)
+
+2. **Same Repository:**
+   - Both projects import from same GitHub repo
+   - Different root directories separate them
+
+3. **Environment Variables:**
+   - Set separately for each project
+   - Frontend needs backend URL
+   - Backend needs frontend URL (for CORS)
+
+4. **Build Commands:**
+   - Frontend: Auto-detected (`npm run build`)
+   - Backend: Manual (`npm run vercel-build`)
 
 ## 🐛 Troubleshooting
 
-### Backend Issues
+**Frontend build fails:**
+- Check root directory is `frontend` (not `.`)
+- Verify `frontend/package.json` exists
+- Check Node.js version (18.x)
 
-**"Module not found"**
-- Check `backend/vercel.json` configuration
-- Ensure `api/index.ts` exists
+**Backend build fails:**
+- Verify root directory is `backend`
+- Check `backend/package.json` exists
+- Verify `backend/api/index.ts` exists
+- Check Prisma generation works
 
-**"Database connection failed"**
-- Verify `DATABASE_URL` format
-- Check Supabase project is active
-- Try direct connection (port 5432)
-
-**"CORS error"**
-- Update `CORS_ORIGIN` with exact frontend URL
-- Include protocol (https://)
+**CORS errors:**
+- Update `CORS_ORIGIN` in backend with exact frontend URL
+- Include `https://` protocol
 - No trailing slash
 
-### Frontend Issues
-
-**"API calls failing"**
-- Check `VITE_API_URL` is correct
+**API not found:**
+- Check `VITE_API_URL` includes `/api` at end
 - Verify backend is deployed and accessible
-- Check browser console for errors
-
-**"Build fails"**
-- Check Node.js version (Vercel uses 18.x by default)
-- Verify all dependencies in `package.json`
-- Check build logs in Vercel
-
-**"Routes not working"**
-- Verify `vercel.json` has rewrites for SPA
-- Check React Router configuration
-
-## 📝 Environment Variables Summary
-
-### Backend (Vercel)
-- `DATABASE_URL` - Supabase PostgreSQL connection
-- `DIRECT_URL` - Direct database connection (for migrations)
-- `JWT_SECRET` - Strong random string
-- `JWT_EXPIRES_IN` - Token expiration (e.g., "7d")
-- `CORS_ORIGIN` - Frontend URL
-- `NODE_ENV` - "production"
-
-### Frontend (Vercel)
-- `VITE_SUPABASE_URL` - Supabase project URL
-- `VITE_SUPABASE_ANON_KEY` - Supabase anon key
-- `VITE_API_URL` - Backend API URL
-
-## 🚀 Post-Deployment
-
-1. **Update CORS:** Set backend CORS_ORIGIN to frontend URL
-2. **Test All Features:** Verify everything works
-3. **Set Custom Domain:** (Optional) Add custom domain in Vercel
-4. **Monitor:** Check Vercel logs and Supabase dashboard
-
-## 📊 Monitoring
-
-- **Vercel Dashboard:** View deployment logs and analytics
-- **Supabase Dashboard:** Monitor database usage
-- **Error Tracking:** Check Vercel function logs
-
-## ✅ Success Checklist
-
-- [ ] Backend deployed and accessible
-- [ ] Frontend deployed and accessible
-- [ ] API health check works
-- [ ] Authentication works
-- [ ] Hierarchy feature works
-- [ ] HR features work
-- [ ] CORS configured correctly
-- [ ] Environment variables set
+- Test health endpoint first
 
 ---
 
-**Your GrandHR is now live on Vercel!** 🎉
-
+**Ready to deploy! Follow the steps above.** 🚀

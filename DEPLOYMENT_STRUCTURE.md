@@ -1,37 +1,35 @@
-# Deployment Structure Explanation
+# Deployment Structure - GrandHR
 
 ## 📁 Current Project Structure
 
 ```
-grandhr/                          ← Root folder (frontend files here)
-├── src/                          ← Frontend React code
-│   ├── components/
-│   ├── contexts/
-│   ├── services/
-│   └── ...
-├── package.json                  ← Frontend dependencies
-├── vite.config.js                ← Frontend build config
-├── vercel.json                   ← Frontend Vercel config
+grandhr/                          ← Root folder
+├── frontend/                     ← Frontend folder (all frontend files here)
+│   ├── src/                      ← Frontend React code
+│   ├── package.json               ← Frontend dependencies
+│   ├── vite.config.js             ← Frontend build config
+│   ├── vercel.json                ← Frontend Vercel config
+│   └── dist/                      ← Build output
 │
-└── backend/                      ← Backend folder (separate)
-    ├── src/                      ← Backend code
-    ├── api/                      ← Vercel serverless entry
-    ├── package.json              ← Backend dependencies
-    └── vercel.json               ← Backend Vercel config
+└── backend/                       ← Backend folder (all backend files here)
+    ├── src/                       ← Backend code
+    ├── api/                       ← Vercel serverless entry
+    ├── package.json               ← Backend dependencies
+    └── vercel.json                ← Backend Vercel config
 ```
 
 ## 🎯 Key Points
 
 ### Frontend Location
-- ✅ Frontend files are in **ROOT folder** (not in `frontend/` folder)
-- ✅ `src/` folder is in root
-- ✅ `package.json` is in root
-- ✅ `vite.config.js` is in root
+- ✅ Frontend files are in **`frontend/` folder**
+- ✅ `frontend/src/` contains React code
+- ✅ `frontend/package.json` is frontend dependencies
+- ✅ `frontend/vite.config.js` is build config
 
 ### Backend Location
 - ✅ Backend files are in **`backend/` folder**
 - ✅ `backend/src/` contains backend code
-- ✅ `backend/package.json` is separate
+- ✅ `backend/package.json` is backend dependencies
 
 ## 🚀 Vercel Deployment Configuration
 
@@ -39,17 +37,17 @@ grandhr/                          ← Root folder (frontend files here)
 
 **In Vercel Dashboard:**
 ```
-Root Directory: . (root)
+Root Directory: frontend
 Framework: Vite
 Build Command: npm run build
 Output Directory: dist
 ```
 
-**Why root?**
-- Frontend `package.json` is in root
-- Frontend `src/` is in root
-- Vite config is in root
-- Build output goes to `dist/` in root
+**Why `frontend`?**
+- Frontend `package.json` is in `frontend/`
+- Frontend `src/` is in `frontend/src/`
+- Vite config is in `frontend/`
+- Build output goes to `frontend/dist/`
 
 ### Backend Project Settings
 
@@ -69,16 +67,16 @@ Output Directory: (empty)
 
 ## ⚠️ Common Mistakes
 
-### ❌ Wrong: Frontend Root = `frontend`
-- Frontend files are NOT in `frontend/` folder
-- They are in root folder
+### ❌ Wrong: Frontend Root = `.`
+- Frontend files are in `frontend/` folder
+- Must set root to `frontend`
 
 ### ❌ Wrong: Backend Root = `.`
 - Backend files are in `backend/` folder
 - Must set root to `backend`
 
 ### ✅ Correct: 
-- Frontend Root: `.` (root)
+- Frontend Root: `frontend`
 - Backend Root: `backend`
 
 ## 📝 Deployment Summary
@@ -87,7 +85,7 @@ Output Directory: (empty)
 
 1. **Frontend Project**
    - Repository: `manishisspecial/grandhr`
-   - Root: `.` (root folder)
+   - Root: `frontend` (frontend folder)
    - Deploys: Frontend React app
 
 2. **Backend Project**
@@ -99,5 +97,4 @@ Output Directory: (empty)
 
 ---
 
-**This structure is correct and ready for deployment!** ✅
-
+**This structure is clean and ready for deployment!** ✅

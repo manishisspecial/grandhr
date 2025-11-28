@@ -27,6 +27,8 @@ node_modules/
 dist/
 build/
 *.local
+frontend/dist/
+backend/dist/
 
 # Environment variables
 .env
@@ -34,6 +36,7 @@ build/
 .env.development.local
 .env.test.local
 .env.production.local
+frontend/.env
 backend/.env
 backend/.env.local
 
@@ -49,7 +52,6 @@ coverage/
 # PDF outputs
 *.pdf
 *.png
-*.jpg
 !LOGO.jpg
 
 # Database
@@ -58,6 +60,7 @@ coverage/
 
 # Prisma
 backend/node_modules/.prisma/
+frontend/node_modules/.prisma/
 
 # Vercel
 .vercel
@@ -102,4 +105,3 @@ public
 # Temporary folders
 tmp/
 temp/
-

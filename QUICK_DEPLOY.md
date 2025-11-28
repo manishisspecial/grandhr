@@ -25,7 +25,7 @@
 1. **Add New Project** → Import same repo
 2. **Configure:**
    - Framework: **Vite** (auto-detected)
-   - Root Directory: **`.`** (root - default) ⚠️ **Keep as root, frontend files are here**
+   - Root Directory: **`frontend`** ⚠️ **Change from default `.` to `frontend`**
    - Build: **`npm run build`** (auto)
    - Output: **`dist`** (auto)
 3. **Environment Variables:**
@@ -47,4 +47,3 @@
 Your app is live! Visit your frontend URL.
 
 For detailed guide, see `VERCEL_DEPLOYMENT.md`
-
